@@ -26,7 +26,7 @@ CREATE TABLE habits (
 CREATE TABLE habit_week_days (
     id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     habit_id    UUID                NOT NULL REFERENCES habits(id) ON DELETE CASCADE,
-    week_day    SMALLINT            NOT NULL CHECK (week_day BETWEEN 0 AND 6),
+    week_day    INTEGER             NOT NULL CHECK (week_day BETWEEN 0 AND 6),
     UNIQUE (habit_id, week_day)
 );
 
