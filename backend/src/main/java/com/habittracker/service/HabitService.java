@@ -142,6 +142,28 @@ public class HabitService {
         }
     }
 
+    /**
+     * Returns all habits created by the user.
+     */
+    @Transactional(readOnly = true)
+    public List<HabitResponse> listHabits(User user) {
+        return habitRepository.findAllByUserIdOrderByCreatedAtAsc(user.getId())
+            .stream()
+            .map(this::toHabitResponse)
+            .toList();
+    }
+
+    /**
+     * Deletes a habit and all its associated completion records.
+     */
+    @Transactional
+    public void deleteHabit(UUID habitId, User user) {
+        Habit habit = habitRepository.findByIdAndUserId(habitId, user.getId())
+            .orElseThrow(() -> ResourceNotFoundException.habit(habitId));
+        habitRepository.delete(habit);
+        log.info("Habit '{}' deleted by user {}", habit.getTitle(), user.getEmail());
+    }
+
     private HabitResponse toHabitResponse(Habit habit) {
         List<Integer> weekDays = habit.getWeekDays().stream()
             .map(HabitWeekDay::getWeekDay)

@@ -57,6 +57,24 @@ public class HabitController {
         return ResponseEntity.ok(habitService.getSummary(user));
     }
 
+    @Operation(summary = "List all habits for the authenticated user")
+    @GetMapping
+    public ResponseEntity<List<HabitResponse>> listHabits(
+        @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok(habitService.listHabits(user));
+    }
+
+    @Operation(summary = "Delete a habit and all its completion records")
+    @DeleteMapping("/{habitId}")
+    public ResponseEntity<Void> deleteHabit(
+        @PathVariable UUID habitId,
+        @AuthenticationPrincipal User user
+    ) {
+        habitService.deleteHabit(habitId, user);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Toggle a habit as completed or uncompleted for today")
     @PatchMapping("/{habitId}/toggle")
     public ResponseEntity<Void> toggleHabit(

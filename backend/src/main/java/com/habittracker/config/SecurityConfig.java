@@ -3,6 +3,7 @@ package com.habittracker.config;
 import com.habittracker.repository.UserRepository;
 import com.habittracker.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
@@ -30,11 +31,14 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final UserRepository userRepository;
+    @Autowired
+    @Lazy
+    private JwtAuthenticationFilter jwtAuthFilter;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Value("${application.cors.allowed-origins:http://localhost:5173}")
     private List<String> allowedOrigins;
