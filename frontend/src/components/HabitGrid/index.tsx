@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { HabitDay } from '@/components/HabitDay'
 import type { DaySummary } from '@/types'
 
-const WEEK_DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-const MIN_SUMMARY_LENGTH = 18 * 7 // ~18 weeks
+const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MIN_WEEKS = 18
 
 interface HabitGridProps {
   summary: DaySummary[]
@@ -12,19 +12,26 @@ interface HabitGridProps {
 }
 
 export function HabitGrid({ summary, isLoading, onDayClick }: HabitGridProps) {
-  // Pad summary to always show a full grid
+  // Prepend empty cells so the first real day lands on the correct weekday row,
+  // then ensure a minimum number of weeks are shown.
   const paddedSummary = useMemo(() => {
-    if (summary.length >= MIN_SUMMARY_LENGTH) return summary
-    const empty: DaySummary[] = Array.from(
-      { length: MIN_SUMMARY_LENGTH - summary.length },
-      (_, i) => ({
-        id: `empty-${i}`,
-        date: '',
-        amountHabits: 0,
-        completedHabits: 0,
-      })
-    )
-    return [...empty, ...summary]
+    const firstReal = summary.find((d) => d.date)
+    const dayOffset = firstReal
+      ? new Date(firstReal.date + 'T12:00:00').getDay() // 0=Sun … 6=Sat
+      : 0
+
+    // Smallest k so that k*7 + dayOffset + summary.length >= MIN_WEEKS * 7
+    const k = Math.ceil(Math.max(0, MIN_WEEKS * 7 - dayOffset - summary.length) / 7)
+    const padCount = k * 7 + dayOffset
+
+    const pad: DaySummary[] = Array.from({ length: padCount }, (_, i) => ({
+      id: `pad-${i}`,
+      date: '',
+      amountHabits: 0,
+      completedHabits: 0,
+    }))
+
+    return [...pad, ...summary]
   }, [summary])
 
   if (isLoading) {
@@ -32,7 +39,7 @@ export function HabitGrid({ summary, isLoading, onDayClick }: HabitGridProps) {
       <div className="flex gap-3 overflow-x-auto pb-4">
         <div className="flex flex-col gap-3 mr-2">
           {WEEK_DAYS.map((d, i) => (
-            <div key={i} className="h-10 w-4 flex items-center justify-center text-xs text-muted">
+            <div key={i} className="h-10 w-8 flex items-center justify-center text-xs text-muted">
               {d}
             </div>
           ))}
@@ -64,7 +71,7 @@ export function HabitGrid({ summary, isLoading, onDayClick }: HabitGridProps) {
         {WEEK_DAYS.map((d, i) => (
           <div
             key={i}
-            className="h-10 w-4 flex items-center justify-center text-xs font-medium text-muted"
+            className="h-10 w-8 flex items-center justify-center text-xs font-medium text-muted"
           >
             {d}
           </div>

@@ -13,7 +13,27 @@ export function useSummary() {
     try {
       setIsLoading(true)
       const data = await habitService.getSummary()
-      setSummary(data)
+
+      // Build a full calendar from Jan 1 to today so every day is clickable,
+      // even before any habit is completed.
+      const today = new Date()
+      const startOfYear = new Date(today.getFullYear(), 0, 1)
+      const summaryMap = new Map(data.map((d) => [d.date, d]))
+      const allDays: DaySummary[] = []
+
+      for (let d = new Date(startOfYear); d <= today; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0]
+        allDays.push(
+          summaryMap.get(dateStr) ?? {
+            id: dateStr,
+            date: dateStr,
+            amountHabits: 0,
+            completedHabits: 0,
+          }
+        )
+      }
+
+      setSummary(allDays)
     } catch {
       toast.error('Failed to load habit summary')
     } finally {
