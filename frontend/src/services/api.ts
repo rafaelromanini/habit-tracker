@@ -72,6 +72,15 @@ export const habitService = {
     return response.data
   },
 
+  list: async (): Promise<Habit[]> => {
+    const response = await api.get<Habit[]>('/habits')
+    return response.data
+  },
+
+  delete: async (habitId: string): Promise<void> => {
+    await api.delete(`/habits/${habitId}`)
+  },
+
   toggle: async (habitId: string): Promise<void> => {
     await api.patch(`/habits/${habitId}/toggle`)
   },

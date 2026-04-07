@@ -1,11 +1,12 @@
-import { Plus, LogOut } from 'lucide-react'
+import { Plus, LogOut, Settings2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
 interface HeaderProps {
   onNewHabit: () => void
+  onManage: () => void
 }
 
-export function Header({ onNewHabit }: HeaderProps) {
+export function Header({ onNewHabit, onManage }: HeaderProps) {
   const { user, logout } = useAuth()
 
   return (
@@ -33,6 +34,14 @@ export function Header({ onNewHabit }: HeaderProps) {
         <span className="text-sm text-muted hidden sm:block">
           {user?.name}
         </span>
+
+        <button
+          onClick={onManage}
+          className="rounded-lg p-2 text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 focus:ring-offset-background"
+          aria-label="Manage habits"
+        >
+          <Settings2 size={18} />
+        </button>
 
         <button
           onClick={onNewHabit}
