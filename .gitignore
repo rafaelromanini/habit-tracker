@@ -1,0 +1,26 @@
+# Build artifacts
+*.zip
+*.jar
+*.war
+
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# IDE / tooling
+.claude/
+frontend/.claude/
+.idea/
+*.iml
+.vscode/
+
+# Environment
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
