@@ -23,6 +23,7 @@ export default {
       animation: {
         'fade-in': 'fadeIn 0.2s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
+        'dialog-enter': 'dialogEnter 0.2s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -32,6 +33,10 @@ export default {
         slideUp: {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        dialogEnter: {
+          '0%': { transform: 'translate(-50%, calc(-50% + 12px))', opacity: '0' },
+          '100%': { transform: 'translate(-50%, -50%)', opacity: '1' },
         },
       },
     },
