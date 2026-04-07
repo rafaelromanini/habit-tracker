@@ -1,0 +1,13 @@
+package com.habittracker.dto.response;
+
+import java.util.UUID;
+
+public record AuthResponse(
+    String accessToken,
+    String tokenType,
+    UserResponse user
+) {
+    public static AuthResponse of(String token, UserResponse user) {
+        return new AuthResponse(token, "Bearer", user);
+    }
+}
